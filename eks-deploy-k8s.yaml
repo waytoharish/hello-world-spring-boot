@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hello-world-spring-boot
+  name: hello-world-spring-boot
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: hello-world-spring-boot
+  template:
+    metadata:
+      labels:
+        app: hello-world-spring-boot
+    spec:
+      containers:
+      - name: hello-world-spring-boot
+        image: 034352053400.dkr.ecr.ap-south-1.amazonaws.com/hello-world-spring-boot
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8085
+          name: http
+          protocol: TCP
+# service type loadbalancer       
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hello-world-spring-boot
+    k8s-app: hello-world-spring-boot
+  name: hello-world-spring-boot
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  type: LoadBalancer
+  selector:
+    app: hello-world-spring-boot
